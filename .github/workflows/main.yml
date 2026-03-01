@@ -1,0 +1,32 @@
+name: Build denpk2
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+
+    - name: Build
+      run: cargo build --release
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: denpk2-${{ matrix.os }}
+        path: target/release/denpk2*
